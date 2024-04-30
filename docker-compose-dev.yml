@@ -12,7 +12,7 @@ services:
       PUID: 1000
       PGID: 1000
     volumes:
-      - ./server:/opt/server
+      - ./server-dev:/opt/server
     ports:
       - "6969-6972:6969-6972"
     stdin_open: true
