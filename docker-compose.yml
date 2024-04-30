@@ -1,0 +1,14 @@
+services:
+  tarkov-sitcoop:
+    image: stayintarkov/stayintarkov:latest
+    container_name: sitcoop
+    environment:
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - ./server:/opt/server
+    ports:
+      - "6969-6972:6969-6972"
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
