@@ -3,10 +3,10 @@ services:
     build:
       context: .
       args:
-        SIT_BRANCH: "master"
-        SIT: "26b9c364963ba49de71d5761bed1135ddad50f77"
+        SIT_BRANCH: "development"
+        SIT: "HEAD^"
         SPT_BRANCH: "3.8.1-DEV"
-        SPT: "a425b1bc4bfe5403b957132dbd678afe4b9f7a21"
+        SPT: "HEAD^"
     container_name: sitcoop-dev
     environment:
       SIT_BACKEND_IP: 127.0.0.1
