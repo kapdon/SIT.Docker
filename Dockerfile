@@ -3,12 +3,13 @@
 ##
 
 FROM ubuntu:latest AS builder
-ARG SIT=-
-ARG SIT_BRANCH=master
-ARG SPT=-
-ARG SPT_BRANCH=3.8.0
+ARG SIT=HEAD^
+ARG SIT_BRANCH=development
+ARG SPT=HEAD^
+ARG SPT_BRANCH=3.8.1-DEV
 ARG NODE=20.11.1
 
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 WORKDIR /opt
 
 # Install git git-lfs curl
@@ -21,19 +22,21 @@ RUN git clone --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT-AKI/Server.git 
 
 ## Check out and git-lfs (specific commit --build-arg SPT=xxxx)
 WORKDIR /opt/srv/project 
-RUN git checkout $SPT || true
-RUN git-lfs fetch --all && git-lfs pull
+RUN git checkout $SPT
+RUN git-lfs pull
+
+## remove the encoding from aki - todo: find a better workaround
+RUN sed -i '/setEncoding/d' /opt/srv/project/src/Program.ts || true
 
 ## Install npm dependencies and run build
 RUN \. $HOME/.nvm/nvm.sh && npm install && npm run build:release -- --arch=$([ "$(uname -m)" = "aarch64" ] && echo arm64 || echo x64) --platform=linux
-
 ## Move the built server and clean up the source
 RUN mv build/ /opt/server/
 WORKDIR /opt
 RUN rm -rf srv/
 ## Grab SIT Coop Server Mod or continue if it exist
 RUN git clone --branch $SIT_BRANCH https://github.com/stayintarkov/SIT.Aki-Server-Mod.git ./server/user/mods/SITCoop 
-RUN cd ./server/user/mods/SITCoop && git checkout $SIT || true 
+RUN \. $HOME/.nvm/nvm.sh && cd ./server/user/mods/SITCoop && git checkout $SIT && npm install
 RUN rm -rf ./server/user/mods/SITCoop/.git
 
 FROM ubuntu:latest
@@ -45,11 +48,12 @@ COPY bullet.sh /opt/bullet.sh
 RUN dos2unix /opt/bullet.sh
 
 # Set permissions
-RUN chmod o+rwx /opt /opt/srv /opt/srv/* -R
+RUN chmod o+rwx /opt/* -R
 
 # Exposing ports
 EXPOSE 6969
 EXPOSE 6970
+EXPOSE 6971
 
 # Specify the default command to run when the container starts
 CMD bash ./bullet.sh
