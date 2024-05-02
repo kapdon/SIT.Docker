@@ -8,11 +8,8 @@ services:
         SPT_BRANCH: "3.9.0-DEV"
         SPT: "HEAD^"
     container_name: sitcoop-dev
-    environment:
     volumes:
       - ./server-dev:/opt/server
     ports:
       - "6969-6972:6969-6972"
-    stdin_open: true
-    tty: true
     restart: unless-stopped

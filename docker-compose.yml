@@ -2,11 +2,8 @@ services:
   tarkov-sitcoop:
     image: stayintarkov/stayintarkov:latest
     container_name: sitcoop
-    environment:
     volumes:
       - ./server:/opt/server
     ports:
       - "6969-6972:6969-6972"
-    stdin_open: true
-    tty: true
     restart: unless-stopped
