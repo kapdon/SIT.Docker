@@ -48,7 +48,7 @@ COPY bullet.sh /opt/bullet.sh
 RUN dos2unix /opt/bullet.sh
 
 # Set permissions
-RUN chmod o+rwx /opt/* -R
+RUN chmod o+rwx /opt -R
 
 # Exposing ports
 EXPOSE 6969
