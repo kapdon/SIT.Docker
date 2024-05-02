@@ -5,5 +5,5 @@ services:
     volumes:
       - ./server:/opt/server
     ports:
-      - "6969-6972:6969-6972"
+      - "6969-6971:6969-6971"
     restart: unless-stopped
