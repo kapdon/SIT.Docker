@@ -13,9 +13,8 @@ if [ -d "/opt/srv" ]; then
 	echo "Starting the server to generate all the required files"
 	cd /opt/server
 	chown $(id -u):$(id -g) ./* -Rf
-	nohup timeout --preserve-status 25s ./Aki.Server.exe >/dev/null 2>&1 
-	sleep 10
 	sed -i 's/127.0.0.1/0.0.0.0/g' /opt/server/Aki_Data/Server/configs/http.json
+	NODE_CHANNEL_FD= timeout --preserve-status 40s ./Aki.Server.exe </dev/null >/dev/null 2>&1 
 	echo "Follow the instructions to proceed!"
 	exit 0
 fi
