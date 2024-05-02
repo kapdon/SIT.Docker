@@ -22,6 +22,7 @@ fi
 if [ -e "/opt/server/delete_me" ]; then
 	echo "Error: Safety file found. Exiting."
 	echo "Please follow the instructions."
+ 	sleep 30
 	exit 1
 fi
 
