@@ -3,8 +3,7 @@ services:
     image: stayintarkov/stayintarkov:latest
     container_name: sitcoop
     environment:
-      PUID: 1000
-      PGID: 1000
+      SIT_BACKEND_IP: 127.0.0.1
     volumes:
       - ./server:/opt/server
     ports:

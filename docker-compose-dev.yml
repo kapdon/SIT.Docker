@@ -9,8 +9,7 @@ services:
         SPT: "HEAD^"
     container_name: sitcoop-dev
     environment:
-      PUID: 1000
-      PGID: 1000
+      SIT_BACKEND_IP: 127.0.0.1
     volumes:
       - ./server-dev:/opt/server
     ports:
