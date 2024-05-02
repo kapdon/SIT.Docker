@@ -1,0 +1,15 @@
+services:
+  tarkov-sitcoop-dev:
+    build:
+      context: .
+      args:
+        SIT_BRANCH: "development"
+        SIT: "HEAD^"
+        SPT_BRANCH: "3.8.1-DEV"
+        SPT: "HEAD^"
+    container_name: sitcoop-dev
+    volumes:
+      - ./server-dev:/opt/server
+    ports:
+      - "6969-6971:6969-6971"
+    restart: unless-stopped

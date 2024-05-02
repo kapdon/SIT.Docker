@@ -1,0 +1,9 @@
+services:
+  tarkov-sitcoop:
+    image: stayintarkov/stayintarkov:latest
+    container_name: sitcoop
+    volumes:
+      - ./server:/opt/server
+    ports:
+      - "6969-6971:6969-6971"
+    restart: unless-stopped
