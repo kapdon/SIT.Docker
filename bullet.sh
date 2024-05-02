@@ -21,6 +21,7 @@ if [ -d "/opt/srv" ]; then
 	screen -S AkiServer -X "^C" # kill Aki.Server
 	# websocket + ip fix
 	sed -i 's/127.0.0.1/0.0.0.0/g' /opt/server/Aki_Data/Server/configs/http.json
+<<<<<<< HEAD
 	# grab SPT port from AKI's http.json in case it has changed.
 	SPT_PORT=`sed -n 's/.*"port": \([0-9]*\),.*/\1/p' /opt/server/Aki_Data/Server/configs/http.json`
 	# websocket overwrite for SIT.
@@ -28,6 +29,8 @@ if [ -d "/opt/srv" ]; then
 	sed -i.bak "s/\"messageWSUrlOverride\": \"[^\"]*\"/\"messageWSUrlOverride\": \"$BACKEND_IP:$SPT_PORT\"/" /opt/server/user/mods/SITCoop/config/coopConfig.json
 	echo "Set SIT coopConfig WSUrlOverride to $BACKEND_IP:$SPT_PORT."
 
+=======
+>>>>>>> parent of ba73dab (WSUrlOverwrite)
 	echo "Follow the instructions to proceed!"
 	exit 0
 fi
