@@ -32,34 +32,30 @@ Platform independent.
    
    > Windows dont handle the \\, use the oneliner!
 
-   > For version SITCoop-1.5.1 (0.13.9.1.27622), go [here](https://github.com/stayintarkov/SIT.Docker/tree/82727f8dea553a5294b321590d933d9722c26b53)\
+   > For version SITCoop-1.5.1 (0.13.9.1.27622), go [here](https://github.com/stayintarkov/SIT.Docker/tree/82727f8dea553a5294b321590d933d9722c26b53)
 
-5. Enviroment Variables
-
-    `SIT_BACKEND_IP` used to set the proper external ip for your server deployment, this is the external ip of your vps, or if you are using radmin/hamachi the ip others use to connect to you.
-
-6. Run the image once:
+5. Run the image once:
    ```bash
-   docker run --pull=never -v $PWD/server:/opt/server -p 6969:6969 -p 6970:6970 -e SIT_BACKEND_IP='YOUR_IP' -p 6971:6971 -p 6972:6972 -it --name sitcoop sitcoop
+   docker run --pull=never -v $PWD/server:/opt/server -p 6969:6969 -p 6970:6970 -p 6971:6971 -p 6972:6972 -it --name sitcoop sitcoop
    ```
    - ⚠️ If you don't set the -v (volume), you won't be able to do a required step!
 
    - On **Linux** you can include `--user $(id -u):$(id -g)`, this way, file ownership will be set to the user who started the container.
    ```bash
-   docker run --pull=never --user $(id -u):$(id -g) -v $PWD/server:/opt/server -e SIT_BACKEND_IP='YOUR_IP' -p 6969:6969 -p 6970:6970 -it --name sitcoop sitcoop
+   docker run --pull=never --user $(id -u):$(id -g) -v $PWD/server:/opt/server -p 6969:6969 -p 6970:6970 -it --name sitcoop sitcoop
    ```
 
-7. Go to your `./server` directory, delete `delete_me`, and optionally install additional mods, make config changes, etc.
+6. Go to your `./server` directory, delete `delete_me`, and optionally install additional mods, make config changes, etc.
     > Using `-p6969:6969`, you expose the port to `0.0.0.0` (meaning: open for LAN, localhost, VPN address, etc).
     > 
     > You can specify `-p 192.168.12.34:6969:6969` for each port if you don't want the ports to listen on all interfaces. 
    
-8. Start your server (and enable auto restart):
+7. Start your server (and enable auto restart):
  ```bash
 docker start sitcoop
 docker update --restart unless-stopped sitcoop
 ```
-9. ... wait a few seconds, then you can connect to `http://YOUR_IP:6969`
+8. ... wait a few seconds, then you can connect to `http://YOUR_IP:6969`
 
 ## Bugs and Issues
 Let me know if there are any. Feel free to submit a PR.
