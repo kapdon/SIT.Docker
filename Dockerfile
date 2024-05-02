@@ -41,7 +41,7 @@ RUN rm -rf ./server/user/mods/SITCoop/.git
 
 FROM ubuntu:latest
 WORKDIR /opt/
-RUN apt update && apt upgrade -yq && apt install -yq dos2unix locales
+RUN apt update && apt upgrade -yq && apt install -yq dos2unix
 COPY --from=builder /opt/server /opt/srv
 COPY bullet.sh /opt/bullet.sh
 # Fix for Windows
