@@ -5,12 +5,10 @@ services:
       args:
         SIT_BRANCH: "development"
         SIT: "HEAD^"
-        SPT_BRANCH: "3.8.1-DEV"
+        SPT_BRANCH: "3.9.0-DEV"
         SPT: "HEAD^"
     container_name: sitcoop-dev
     environment:
-      PUID: 1000
-      PGID: 1000
     volumes:
       - ./server-dev:/opt/server
     ports:
