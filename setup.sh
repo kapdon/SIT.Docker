@@ -4,7 +4,8 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-# one-time setup for SIT
+# one-time setup for SIT; only runs if the entrypoint doesn't detect an /opt/server/version file
+
 sit_setup() {
 # copied from https://github.com/stayintarkov/SIT.Docker/blob/master/bullet.sh
 if [ -d "/opt/srv" ]; then
