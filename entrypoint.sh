@@ -7,6 +7,8 @@ set -o nounset
 # sets SIT_VERSION to the value of the SIT environment variable, or "latest" if not set
 SIT_VERSION="${SIT:=latest}"
 
+echo "Stay In Tarkov Docker"
+
 # perform one-time server setup if no version file is found
 if [ ! -e "/opt/server/version" ]; then
   echo "No version file found, running first-time setup..."

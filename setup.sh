@@ -7,13 +7,12 @@ set -o nounset
 # one-time setup for SIT; only runs if the entrypoint doesn't detect an /opt/server/version file
 
 sit_setup() {
-# copied from https://github.com/stayintarkov/SIT.Docker/blob/master/bullet.sh
+# copied from https://github.com/stayintarkov/SIT.Docker/blob/b2c2f80eb6333314bf9ff1776e4528fe6ea74cee/bullet.sh
 if [ -d "/opt/srv" ]; then
   start=$(date +%s)
   echo "Started copying files to your volume/directory.. Please wait."
   cp -r /opt/srv/* /opt/server/
   rm -r /opt/srv
-  touch /opt/server/delete_me
   end=$(date +%s)
 
   echo "Files copied to your machine in $(($end-$start)) seconds."
