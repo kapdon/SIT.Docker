@@ -8,6 +8,7 @@ set -o nounset
 SIT_VERSION="${SIT:=latest}"
 
 echo "Stay In Tarkov Docker"
+echo "github.com/StayInTarkov"
 
 # perform one-time server setup if no version file is found
 if [ ! -e "/opt/server/version" ]; then
