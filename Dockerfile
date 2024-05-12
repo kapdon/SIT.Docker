@@ -3,10 +3,10 @@
 ##
 
 FROM ubuntu:latest AS builder
-ARG SIT=HEAD^
+ARG SIT=
 ARG SIT_BRANCH=development
-ARG SPT=HEAD^
-ARG SPT_BRANCH=3.8.1-DEV
+ARG SPT=
+ARG SPT_BRANCH=master
 ARG NODE=20.11.1
 
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -46,8 +46,7 @@ COPY --from=builder /opt/server /opt/srv
 COPY ./setup.sh /opt/setup.sh
 COPY ./entrypoint.sh /opt/entrypoint.sh
 # Fix for Windows
-RUN dos2unix /opt/setup.sh \
-    && dos2unix /opt/entrypoint.sh
+RUN dos2unix /opt/setup.sh /opt/entrypoint.sh
 
 # Set permissions
 RUN chmod o+rwx /opt -R
