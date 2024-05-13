@@ -74,9 +74,9 @@ RUN rm -rf .git
 RUN rm -rf /opt/builder
 
 FROM alpine as server
-RUN apk update
-RUN apk --no-cache add libgcc libstdc++ libc6-compat screen dos2unix
-RUN rm -rf /var/cache/apk/*
+RUN apk update && \
+apk --no-cache add libgcc libstdc++ libc6-compat screen dos2unix && \
+rm -rf /var/cache/apk/*
 
 FROM server
 WORKDIR /opt
