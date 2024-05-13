@@ -4,8 +4,8 @@
 EXISTING_VERSION=$(cat /opt/server/version 2>/dev/null)
 SIT_VERSION=$(cat /opt/srv/user/mods/SITCoop/version 2>/dev/null)
 
-# Grab container IP and user ENV input if exists else default
-SPT_IP=${CONTAINER_IP:-0.0.0.0}
+# Grab user ENV input if exists else default
+SPT_IP=-0.0.0.0
 SPT_BACKEND_IP=${BACKEND_IP:-127.0.0.1}
 NEW_SERVER_NAME=${SERVER_NAME:-$SIT_VERSION}
 
