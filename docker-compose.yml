@@ -2,6 +2,9 @@ services:
   tarkov-sitcoop:
     image: stayintarkov/stayintarkov:latest
     container_name: sitcoop
+    environment:
+      - BACKEND_IP=CHANGEME
+     #- SERVER_NAME=SIT
     volumes:
       - ./server:/opt/server
     ports:
