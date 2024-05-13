@@ -25,7 +25,7 @@ if [ -d "/opt/srv" ]; then
   echo "Starting the server to generate all the required files"
   cd /opt/server
   chown $(id -u):$(id -g) ./* -Rf
-  echo "set SPT_IP to CONTAINER_IP: $SPT_IP, updating http.json"
+  echo "set SPT_IP: $SPT_IP, updating http.json"
   sed -ir 's/"ip": .*,/"ip": "'$SPT_IP'",/' /opt/server/Aki_Data/Server/configs/http.json
 
   echo "BACKEND_IP: $SPT_BACKEND_IP, updating http.json"

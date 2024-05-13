@@ -40,7 +40,7 @@ RUN if [ -n "$SPT_PR" ] && echo "$SPT_PR" | grep -Eq "^[0-9]+$"; then \
 FROM git as sit
 WORKDIR /opt
 # invalidate cache and repull if upstream is different.
-ADD https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/git/refs/heads/development /opt/sit_version.json
+ADD https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/git/refs/heads/${SIT_BRANCH} /opt/sit_version.json
 # pull pr if provided, pull commit if provided, else single branch.
 RUN if [ -n "$SIT_PR" ] && echo "$SIT_PR" | grep -Eq "^[0-9]+$"; then \
         git clone https://github.com/stayintarkov/SIT.Aki-Server-Mod.git sit && \
