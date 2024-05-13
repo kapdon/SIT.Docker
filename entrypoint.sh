@@ -20,6 +20,7 @@ if [ ! -e "/opt/server/version" ]; then
   echo "Version $SIT_VERSION installed."
   # will prevent setup from running again
   echo "$SIT_VERSION" > /opt/server/version
+  exit 0
 fi
 
 # continue to run whichever command was passed in (typically running Aki.Server.exe)
