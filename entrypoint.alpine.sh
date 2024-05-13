@@ -5,9 +5,9 @@ EXISTING_VERSION=$(cat /opt/server/version 2>/dev/null)
 SIT_VERSION=$(cat /opt/srv/user/mods/SITCoop/version 2>/dev/null)
 
 # Grab user ENV input if exists else default
-SPT_IP=-0.0.0.0
+SPT_IP=0.0.0.0
 SPT_BACKEND_IP=${BACKEND_IP:-127.0.0.1}
-NEW_SERVER_NAME=${SERVER_NAME:-$SIT_VERSION}
+NEW_SERVER_NAME=${SERVER_NAME:-SIT $SIT_VERSION}
 
 
 echo "Stay In Tarkov Docker"
@@ -31,7 +31,7 @@ if [ -d "/opt/srv" ]; then
   echo "BACKEND_IP: $SPT_BACKEND_IP, updating http.json"
   sed -ir 's/"backendIp": .*,/"backendIp": "'$SPT_BACKEND_IP'",/' /opt/server/Aki_Data/Server/configs/http.json
 
-  sed -i "s/\"serverName\": \".*\"/\"serverName\": \"SIT $NEW_SERVER_NAME\"/" /opt/server/Aki_Data/Server/configs/core.json
+  sed -i "s/\"serverName\": \".*\"/\"serverName\": \"$NEW_SERVER_NAME\"/" /opt/server/Aki_Data/Server/configs/core.json
   MODIFIED_NAME=$(sed -n 's/.*"serverName": "\([^"]*\)".*/\1/p' /opt/server/Aki_Data/Server/configs/core.json)
   echo "Server Name: $MODIFIED_NAME, updating core.json"
   # boot server once in bg to generate files.
