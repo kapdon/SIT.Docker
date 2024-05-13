@@ -12,7 +12,7 @@ services:
         SPT_PR: 
     container_name: sitcoop-dev
     environment:
-      - BACKEND_IP=CHAGEME
+      - BACKEND_IP=CHANGEME
       #- SERVER_NAME=SIT
     volumes:
       - ./server-dev:/opt/server
