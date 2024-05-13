@@ -2,12 +2,18 @@ services:
   tarkov-sitcoop-dev:
     build:
       context: .
+      dockerfile: Dockerfile.alpine
       args:
         SIT_BRANCH: "development"
-        SIT: "HEAD^"
-        SPT_BRANCH: "3.8.1-DEV"
-        SPT: "HEAD^"
+        SIT_COMMIT:
+        SIT_PR: 
+        SPT_BRANCH: "master"
+        SPT_COMMIT:
+        SPT_PR: 
     container_name: sitcoop-dev
+    environment:
+      - BACKEND_IP=CHAGEME
+      #- SERVER_NAME=SIT
     volumes:
       - ./server-dev:/opt/server
     ports:

@@ -1,0 +1,101 @@
+##
+## StayInTarkov LINUX Container
+##
+
+ARG NODE=20.11.1
+
+FROM alpine as git
+RUN apk add git git-lfs
+
+ARG SIT_COMMIT
+ARG SIT_BRANCH=development
+ARG SIT_PR
+ARG SPT_COMMIT
+ARG SPT_BRANCH=master
+ARG SPT_PR
+
+
+FROM git as spt
+WORKDIR /opt
+# invalidate cache and repull if upstream is different.
+ADD https://dev.sp-tarkov.com/api/v1/repos/SPT-AKI/Server/git/refs/heads/${SPT_BRANCH} /opt/spt_version.json
+# pull pr if provided, pull commit if provided, else single branch.
+RUN if [ -n "$SPT_PR" ] && echo "$SPT_PR" | grep -Eq "^[0-9]+$"; then \
+        git clone https://dev.sp-tarkov.com/SPT-AKI/Server.git spt && \
+        cd spt && \
+        git fetch origin pull/$SPT_PR/head:pr_$SPT_PR && \
+        git checkout pr_$SPT_PR && \
+        git-lfs pull; \
+    elif [ -n "$SPT_COMMIT" ]; then \
+        git clone --single-branch --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT-AKI/Server.git spt && \
+        cd spt && \
+        git checkout $SPT_COMMIT && \
+        git-lfs pull; \
+    else \
+        git clone --single-branch --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT-AKI/Server.git spt && \
+        cd spt && \
+        git-lfs pull; \
+    fi
+
+FROM git as sit
+WORKDIR /opt
+# invalidate cache and repull if upstream is different.
+ADD https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/git/refs/heads/development /opt/sit_version.json
+# pull pr if provided, pull commit if provided, else single branch.
+RUN if [ -n "$SIT_PR" ] && echo "$SIT_PR" | grep -Eq "^[0-9]+$"; then \
+        git clone https://github.com/stayintarkov/SIT.Aki-Server-Mod.git sit && \
+        cd sit && \
+        git fetch origin pull/$SIT_PR/head:pr_$SIT_PR && \
+        git checkout pr_$SIT_PR && \
+        echo "pr_${SIT_PR}" > /opt/sit/version; \
+    elif [ -n "$SIT_COMMIT" ]; then \
+        git clone --single-branch --branch $SIT_BRANCH https://github.com/stayintarkov/SIT.Aki-Server-Mod.git sit && \
+        cd sit && \
+        git checkout $SIT_COMMIT && \
+        echo "$SIT_COMMIT" > /opt/sit/version; \
+    else \
+        git clone --single-branch --branch $SIT_BRANCH https://github.com/stayintarkov/SIT.Aki-Server-Mod.git sit && \
+        cat /opt/sit_version.json | sed -n 's/.*"sha":"\([^"]*\)".*/\1/p' > /opt/sit/version; \
+    fi
+RUN echo "SIT version: $(cat /opt/sit/version)"
+
+FROM node:${NODE}-alpine as builder
+# spt needs git to build:release
+RUN apk add git
+COPY --from=spt /opt/spt /opt/builder
+WORKDIR /opt/builder/project
+RUN npm install
+RUN npm run build:release
+RUN mv build/ /opt/server/
+COPY --from=sit /opt/sit /opt/server/user/mods/SITCoop
+WORKDIR /opt/server/user/mods/SITCoop
+RUN npm install
+RUN rm -rf .git
+RUN rm -rf /opt/builder
+
+FROM alpine as server
+RUN apk update
+RUN apk --no-cache add libgcc libstdc++ libc6-compat screen dos2unix
+RUN rm -rf /var/cache/apk/*
+
+FROM server
+WORKDIR /opt
+COPY --from=builder /opt/server /opt/srv
+COPY ./entrypoint.alpine.sh /opt/entrypoint.sh
+# Fix for Windows
+RUN dos2unix /opt/entrypoint.sh
+# Set permissions
+#RUN chmod o+rwx /opt -R
+RUN chmod +x /opt/entrypoint.sh
+
+# Exposing ports
+EXPOSE 6969
+EXPOSE 6970
+EXPOSE 6971
+
+VOLUME ["/opt/server"]
+
+WORKDIR /opt/server
+ENTRYPOINT ["/opt/entrypoint.sh"]
+# Specify the default command to run when the container starts
+CMD ["/opt/server/Aki.Server.exe"]
