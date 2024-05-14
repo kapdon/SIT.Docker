@@ -1,6 +1,9 @@
-##
-## StayInTarkov LINUX Container
-##
+
+# StayInTarkov LINUX Container
+#
+# Copyright 2024 StayInTarkov
+# Use of this source code is governed by an MIT
+# license that can be found in the LICENSE file.
 
 ARG NODE=20.11.1
 
@@ -57,7 +60,7 @@ RUN if [ -n "$SIT_PR" ] && echo "$SIT_PR" | grep -Eq "^[0-9]+$"; then \
         git clone --single-branch --branch $SIT_BRANCH https://github.com/stayintarkov/SIT.Aki-Server-Mod.git sit && \
         cat /opt/sit_version.json | sed -n 's/.*"sha":"\([^"]*\)".*/\1/p' > /opt/sit/version; \
     fi
-RUN echo "SIT version: $(cat /opt/sit/version)"
+
 
 FROM node:${NODE}-alpine as builder
 # spt needs git to build:release
@@ -75,17 +78,17 @@ RUN rm -rf /opt/builder
 
 FROM alpine as server
 RUN apk update && \
-apk --no-cache add libgcc libstdc++ libc6-compat screen dos2unix && \
+apk --no-cache add libgcc libstdc++ libc6-compat curl screen dos2unix && \
 rm -rf /var/cache/apk/*
 
-FROM server
+FROM server as development
+ENV buildver "development"
 WORKDIR /opt
 COPY --from=builder /opt/server /opt/srv
 COPY ./entrypoint.alpine.sh /opt/entrypoint.sh
 # Fix for Windows
 RUN dos2unix /opt/entrypoint.sh
 # Set permissions
-#RUN chmod o+rwx /opt -R
 RUN chmod +x /opt/entrypoint.sh
 
 # Exposing ports
@@ -99,3 +102,7 @@ WORKDIR /opt/server
 ENTRYPOINT ["/opt/entrypoint.sh"]
 # Specify the default command to run when the container starts
 CMD ["/opt/server/Aki.Server.exe"]
+
+FROM development as release
+ENV buildver "release"
+RUN sed -n 's/.*"version": "\(.*\)".*/\1/p' /opt/srv/user/mods/SITCoop/package.json > /opt/srv/user/mods/SITCoop/version

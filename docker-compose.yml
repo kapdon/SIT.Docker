@@ -3,8 +3,10 @@ services:
     image: stayintarkov/stayintarkov:latest
     container_name: sitcoop
     environment:
-      - BACKEND_IP=CHANGEME
-     #- SERVER_NAME=SIT
+      - BACKEND_IP=
+      - SERVER_NAME=
+      - HEADLESS=true
+      - UPDATE=false
     volumes:
       - ./server:/opt/server
     ports:

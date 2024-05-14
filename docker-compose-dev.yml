@@ -3,17 +3,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.alpine
+      target: release
       args:
         SIT_BRANCH: "development"
         SIT_COMMIT:
-        SIT_PR: 
+        SIT_PR: 53
         SPT_BRANCH: "master"
         SPT_COMMIT:
         SPT_PR: 
     container_name: sitcoop-dev
+   # command: /bin/ash
     environment:
-      - BACKEND_IP=CHANGEME
-      #- SERVER_NAME=SIT
+      - BACKEND_IP=
+      - SERVER_NAME=
+      - HEADLESS=true
+      - UPDATE=false
     volumes:
       - ./server-dev:/opt/server
     ports:
