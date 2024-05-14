@@ -77,7 +77,8 @@ if [ -d "/opt/srv" ]; then
       echo "SIT Version updated: $(cat /opt/server/version)"
     else
       echo "UPDATE flag false, use -e UPPDATE=true if updating."
-      sleep 10
+      echo "Starting SIT Server in 5 seconds.."
+      sleep 5
     fi
   fi
 # quit if not headless
