@@ -25,7 +25,7 @@ sit_setup() {
   start=$(date +%s)
   echo "Started copying files to your volume/directory.. Please wait."
   cp -r /opt/srv/* /opt/server/
-  rm -r /opt/srv
+  rm -rf /opt/srv
   end=$(date +%s)
 
   echo "Files copied to your machine in $(($end-$start)) seconds."
@@ -49,7 +49,10 @@ sit_setup() {
 	while [ ! -f "/opt/server/user/mods/SITCoop/config/coopConfig.json" ]; do
 		sleep 10  # sleep till coopConfig.json is generated
 	done
-	screen -S AkiServer -X "^C" # kill Aki.Server
+  # kill Aki.Server
+  pid=$(screen -ls | grep 'AkiServer' | awk '{print $1}' | cut -d '.' -f 1)
+  kill "$pid"
+	screen -S AkiServer -X "^C"
 }
 
 # perform one-time server setup if no version file is found

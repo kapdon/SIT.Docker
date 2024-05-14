@@ -3,11 +3,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.alpine
-      target: release
+     # target: development
       args:
         SIT_BRANCH: "development"
         SIT_COMMIT:
-        SIT_PR: 53
+        SIT_PR:
         SPT_BRANCH: "master"
         SPT_COMMIT:
         SPT_PR: 
