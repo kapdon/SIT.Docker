@@ -58,8 +58,7 @@ sit_setup() {
 	done
   # kill Aki.Server
   pid=$(screen -ls | grep 'AkiServer' | awk '{print $1}' | cut -d '.' -f 1)
-  kill "$pid"
-	screen -S AkiServer -X "^C"
+  kill -9 "$pid"
 }
 
 # perform one-time server setup if no version file is found
