@@ -68,7 +68,7 @@ if [ -d "/opt/srv" ]; then
     echo "SIT Version installed: $(cat /opt/server/version)"
 
 # new SIT version found, reinstall if UPDATE flag present, else print version diff.
-  elif [ "$EXISTING_VERSION" != "$SIT_VERSION" ]; then
+  elif [ "$EXISTING_VERSION" != "$SIT_VERSION" ] || [ "$UPDATE" = true ]; then
     echo "new SIT version: $SIT_VERSION"
     echo "existing SIT version: $EXISTING_VERSION"
     if [ "$UPDATE" = true ]; then
