@@ -13,6 +13,7 @@ HEADLESS=${HEADLESS:-true}
 UPDATE=${UPDATE:-false}
 SPT_IP=${SPT_IP:-0.0.0.0}
 SPT_BACKEND_IP=${BACKEND_IP:-$(curl -s4 ipv4.icanhazip.com)}
+SPT_LOG_REQUESTS=${LOG_REQUESTS:-true}
 NEW_SERVER_NAME=${SERVER_NAME:-SIT $SIT_VERSION}
 
 #DBUG
@@ -33,15 +34,21 @@ sit_setup() {
   cd /opt/server
   chown $(id -u):$(id -g) ./* -Rf
 
-  echo "SPT_IP: $SPT_IP, updating http.json"
   sed -ir 's/"ip": .*,/"ip": "'$SPT_IP'",/' /opt/server/Aki_Data/Server/configs/http.json
+  MOD_IP=$(sed -n 's/.*"ip": "\(.*\)",/\1/p' /opt/server/Aki_Data/Server/configs/http.json)
+  echo "SPT_IP: $MOD_IP, updating http.json"
 
-  echo "BACKEND_IP: $SPT_BACKEND_IP, updating http.json"
   sed -ir 's/"backendIp": .*,/"backendIp": "'$SPT_BACKEND_IP'",/' /opt/server/Aki_Data/Server/configs/http.json
+  MOD_BIP=$(sed -n 's/.*"backendIp": "\(.*\)",/\1/p' /opt/server/Aki_Data/Server/configs/http.json)
+  echo "BACKEND_IP: $MOD_BIP, updating http.json"
 
-  sed -i "s/\"serverName\": \".*\"/\"serverName\": \"$NEW_SERVER_NAME\"/" /opt/server/Aki_Data/Server/configs/core.json
+  sed -ir "s/\"serverName\": \".*\"/\"serverName\": \"$NEW_SERVER_NAME\"/" /opt/server/Aki_Data/Server/configs/core.json
   MODIFIED_NAME=$(sed -n 's/.*"serverName": "\([^"]*\)".*/\1/p' /opt/server/Aki_Data/Server/configs/core.json)
-  echo "Server Name: $MODIFIED_NAME, updating core.json"
+  echo "serverName: $MODIFIED_NAME, updating core.json"
+
+  sed -ir 's/"logRequests": .*,/"logRequests": '"$SPT_LOG_REQUESTS"',/' /opt/server/Aki_Data/Server/configs/http.json
+  MOD_LOGQ=$(sed -n 's/.*"logRequests": \(.*\),/\1/p' /opt/server/Aki_Data/Server/configs/http.json)
+  echo "logRequests: $MOD_LOGQ, updating http.json"
 
   # remove previous install.log n boot server once in bg to generate files.
   rm /opt/server/install.log

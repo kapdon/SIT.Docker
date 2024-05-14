@@ -18,6 +18,7 @@ services:
       - SERVER_NAME=
       - HEADLESS=true
       - UPDATE=false
+      - LOG_REQUESTS=true
     volumes:
       - ./server-dev:/opt/server
     ports:
