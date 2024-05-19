@@ -8,6 +8,9 @@
 ARG NODE=20.11.1
 
 FROM alpine as git
+# https://lore.kernel.org/git/20240514181641.150112-1-sandals@crustytoothpaste.net/T/
+ENV GIT_CLONE_PROTECTION_ACTIVE=false
+# work around until git and git lfs resolve their differences.
 RUN apk add git git-lfs
 
 ARG SIT_COMMIT
