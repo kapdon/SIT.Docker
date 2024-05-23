@@ -10,16 +10,16 @@ SIT_VERSION=$(cat /opt/srv/user/mods/SITCoop/version 2>/dev/null)
 
 # Grab user ENV input if exists else default
 HEADLESS=${HEADLESS:-true}
-UPDATE=${UPDATE:-false}
+FORCE=${FORCE:-false}
 SPT_IP=${SPT_IP:-0.0.0.0}
 SPT_BACKEND_IP=${BACKEND_IP:-$(curl -s4 ipv4.icanhazip.com)}
 SPT_LOG_REQUESTS=${LOG_REQUESTS:-true}
 NEW_SERVER_NAME=${SERVER_NAME:-SIT $SIT_VERSION}
 SPT_CONFIG_PATH=Aki_Data/Server/config
-#SPT_CONFIG_PATH=SPT_Data/Server/config 3.9
+#SPT_CONFIG_PATH=SPT_Data/Server/config
 
 #DBUG
-echo "DEBUG build: $buildver, HEADLESS: $HEADLESS, UPDATE: $UPDATE"
+echo "DEBUG build: $buildver, HEADLESS: $HEADLESS, BREAKKING: $BREAKING, FORCE: $FORCE"
 
 echo "Stay In Tarkov Docker"
 echo "github.com/StayInTarkov/SIT.Docker"
@@ -54,14 +54,14 @@ sit_setup() {
 
   # remove previous install.log n boot server once in bg to generate files.
   rm /opt/server/install.log
-  screen -L -Logfile "install.log" -d -m -S AkiServer ./Aki.Server.exe
+  screen -L -Logfile "install.log" -d -m -S SPTServer ./Aki.Server.exe
   # 3.9 upcoming
   # screen -L -Logfile "install.log" -d -m -S AkiServer ./SPT.Server.exe
 	while [ ! -f "/opt/server/user/mods/SITCoop/config/coopConfig.json" ]; do
 		sleep 10  # sleep till coopConfig.json is generated
 	done
   # kill Aki.Server
-  pid=$(screen -ls | grep 'AkiServer' | awk '{print $1}' | cut -d '.' -f 1)
+  pid=$(screen -ls | grep 'SPTServer' | awk '{print $1}' | cut -d '.' -f 1)
   kill -9 "$pid"
 }
 
@@ -76,21 +76,33 @@ if [ -d "/opt/srv" ]; then
     echo "saving $SIT_VERSION to /opt/server/version"
     printf "%s" "$SIT_VERSION" > /opt/server/version
     echo "SIT Version installed: $(cat /opt/server/version)"
+	# set headless to false only for inital set up.
+	HEADLESS = false
 
-# new SIT version found, reinstall if UPDATE flag present, else print version diff.
-  elif [ "$EXISTING_VERSION" != "$SIT_VERSION" ] || [ "$UPDATE" = true ]; then
+# new SIT version found, always reinstall update unless BREAKING flag present, else print version diff.
+  elif [ "$EXISTING_VERSION" != "$SIT_VERSION" ] || [ "$FORCE" = true ]; then
     echo "new SIT version: $SIT_VERSION"
     echo "existing SIT version: $EXISTING_VERSION"
-    if [ "$UPDATE" = true ]; then
-      echo "UPDATE flag true, installing update..."
+    if [ "$BREAKING" = false ]; then
+      echo "SIT Update found, no breaking change detected, installing update..."
+      sit_setup
+      # will prevent setup from running again
+      echo "saving $SIT_VERSION to /opt/server/version"
+      printf "%s" "$SIT_VERSION" > /opt/server/version
+      echo "SIT Version updated: $(cat /opt/server/version)"
+	elif [ "$FORCE" = true ]; then
+	  echo "Breaking SIT Update found, FORCE flag set, installing update..."
       sit_setup
       # will prevent setup from running again
       echo "saving $SIT_VERSION to /opt/server/version"
       printf "%s" "$SIT_VERSION" > /opt/server/version
       echo "SIT Version updated: $(cat /opt/server/version)"
     else
-      echo "UPDATE flag false, use -e UPDATE=true if updating."
-      echo "Starting SIT Server in 5 seconds.."
+	  echo "WARNING: breaking change found in SIT update"
+	  echo "please check release notes to ensure proper steps are taken"
+      echo "use -e FORCE=true to update server..."
+      echo "FORCE flag not set, update aborted."
+	  echo "Starting SIT Server in 5 seconds.."
       sleep 5
     fi
   fi

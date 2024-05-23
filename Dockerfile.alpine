@@ -6,6 +6,7 @@
 # license that can be found in the LICENSE file.
 
 ARG NODE=20.11.1
+ARG BREAKING_CHANGE=false
 
 FROM alpine as git
 # https://lore.kernel.org/git/20240514181641.150112-1-sandals@crustytoothpaste.net/T/
@@ -85,6 +86,7 @@ apk --no-cache add libgcc libstdc++ libc6-compat curl screen dos2unix && \
 rm -rf /var/cache/apk/*
 
 FROM server as development
+ENV BREAKING=${BREAKING_CHANGE}
 ENV buildver "development"
 WORKDIR /opt
 COPY --from=builder /opt/server /opt/srv
