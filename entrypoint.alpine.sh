@@ -90,8 +90,8 @@ if [ -d "/opt/srv" ]; then
       echo "saving $SIT_VERSION to /opt/server/version"
       printf "%s" "$SIT_VERSION" > /opt/server/version
       echo "SIT Version updated: $(cat /opt/server/version)"
-	elif [ "$FORCE" = true ]; then
-	  echo "Breaking SIT Update found, FORCE flag set, installing update..."
+    elif [ "$FORCE" = true ]; then
+      echo "Breaking SIT Update found, FORCE flag set, installing update..."
       sit_setup
       # will prevent setup from running again
       echo "saving $SIT_VERSION to /opt/server/version"
