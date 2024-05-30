@@ -25,21 +25,21 @@ ARG SPT_PR
 FROM git as spt
 WORKDIR /opt
 # invalidate cache and repull if upstream is different.
-ADD https://dev.sp-tarkov.com/api/v1/repos/SPT-AKI/Server/git/refs/heads/${SPT_BRANCH} /opt/spt_version.json
+ADD https://dev.sp-tarkov.com/api/v1/repos/SPT/Server/git/refs/heads/${SPT_BRANCH} /opt/spt_version.json
 # pull pr if provided, pull commit if provided, else single branch.
 RUN if [ -n "$SPT_PR" ] && echo "$SPT_PR" | grep -Eq "^[0-9]+$"; then \
-        git clone https://dev.sp-tarkov.com/SPT-AKI/Server.git spt && \
+        git clone https://dev.sp-tarkov.com/SPT/Server.git spt && \
         cd spt && \
         git fetch origin pull/$SPT_PR/head:pr_$SPT_PR && \
         git checkout pr_$SPT_PR && \
         git-lfs pull; \
     elif [ -n "$SPT_COMMIT" ]; then \
-        git clone --single-branch --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT-AKI/Server.git spt && \
+        git clone --single-branch --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT/Server.git spt && \
         cd spt && \
         git checkout $SPT_COMMIT && \
         git-lfs pull; \
     else \
-        git clone --single-branch --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT-AKI/Server.git spt && \
+        git clone --single-branch --branch $SPT_BRANCH https://dev.sp-tarkov.com/SPT/Server.git spt && \
         cd spt && \
         git-lfs pull; \
     fi
